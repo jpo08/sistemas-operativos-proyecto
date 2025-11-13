@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+# dc_admin_tools.sh
 set -euo pipefail
 
 pause() { read -rp $'Presione ENTER para continuar...\n' _; }
@@ -5,10 +7,8 @@ pause() { read -rp $'Presione ENTER para continuar...\n' _; }
 show_users_lastlogon() {
     echo "Usuarios del sistema y último login:"
     if command -v lastlog >/dev/null 2>&1; then
-        # Muestra todos los usuarios y la última vez que ingresaron
         lastlog
     else
-        # Fallback: listar /etc/passwd y usar last para cada usuario
         awk -F: '{ print $1 }' /etc/passwd | while read -r u; do
             last -F -n 1 "$u" 2>/dev/null | head -n1 || echo "$u nunca ha iniciado sesión"
         done
@@ -66,13 +66,13 @@ backup_to_usb() {
     fi
 
     # Fallback buscar en /media y /run/media
-    if [ ${#mts[@]:-0} -eq 0 ]; then
+    if [ "${mts[*]-}" = "" ]; then
         for d in /media/*/* /run/media/*/*; do
             [ -d "$d" ] && mts+=("$d")
         done
     fi
 
-    if [ ${#mts[@]:-0} -eq 0 ]; then
+    if [ "${mts[*]-}" = "" ]; then
         echo "No se detectaron memorias USB montadas. Monte la USB y vuelva a intentarlo."
         return
     fi

@@ -121,7 +121,7 @@ function Show-MemorySwap {
 function Backup-ToUSB {
     Write-Host "Backup de directorio a memoria USB" 
     try {
-        $removable = Get-Volume | Where-Object { $_.DriveType -eq 'Removable' -and $_.FileSystem -ne $null }
+        $removable = Get-Disk | Where-Object { $_.BusType -eq 'USB' } | Get-Partition | Get-Volume | Where-Object { $_.FileSystem -ne $null }
     } catch {
         $removable = @()
     }
@@ -168,13 +168,13 @@ function Backup-ToUSB {
 while ($true) {
     Clear-Host
     Write-Host "=== Herramienta DC (PowerShell) ===" 
-    Write-Host "1) Desplegar usuarios y último login"
-    Write-Host "2) Desplegar filesystems / discos (tamaño y espacio libre en bytes)"
-    Write-Host "3) Top 10 archivos más grandes en filesystem especificado"
+    Write-Host "1) Desplegar usuarios y ultimo login"
+    Write-Host "2) Desplegar filesystems / discos (tamano y espacio libre en bytes)"
+    Write-Host "3) Top 10 archivos mas grandes en filesystem especificado"
     Write-Host "4) Memoria libre y swap en uso (bytes y porcentaje)"
-    Write-Host "5) Hacer copia de seguridad a memoria USB + catálogo"
+    Write-Host "5) Hacer copia de seguridad a memoria USB + catalogo"
     Write-Host "0) Salir"
-    $opt = Read-Host "Seleccione una opción"
+    $opt = Read-Host "Seleccione una opcion"
     switch ($opt) {
         '1' { Show-UsersLastLogon; Pause-Continue }
         '2' { Show-Filesystems; Pause-Continue }
@@ -182,7 +182,7 @@ while ($true) {
         '4' { Show-MemorySwap; Pause-Continue }
         '5' { Backup-ToUSB; Pause-Continue }
         '0' { break }
-        default { Write-Warning "Opción inválida"; Pause-Continue }
+        default { Write-Warning "Opcion invalida"; Pause-Continue }
     }
 }
 
